@@ -19,6 +19,7 @@ export function PlaceCard({card,className}: PlaceCardProps): JSX.Element {
     rating,
     previewImage,
   } = card;
+
   return(
     <article className={`${className}__card place-card`}>
       {isPremium && (
