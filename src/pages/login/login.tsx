@@ -1,22 +1,23 @@
 import { Helmet } from 'react-helmet-async';
-import Logo from '../../components/logo/logo';
+import { Navigate, Link } from 'react-router-dom';
+import { Header } from '../../components/header/header';
+import {AppRoute, AuthorizationStatus } from '../../const';
 
-function Login(): JSX.Element {
+type LoginProps = {
+  authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
+};
+
+
+function Login({authorizationStatus}: LoginProps): JSX.Element {
+  if (authorizationStatus === AuthorizationStatus.Auth) {
+    return <Navigate to={AppRoute.Root} />;
+  }
   return (
     <div className="page page--gray page--login">
       <Helmet>
         <title>6 cities: authorization</title>
       </Helmet>
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <Logo/>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <Header/>
       <main className="page__main page__main--login">
         <div className="page__login-container container">
           <section className="login">
@@ -35,9 +36,9 @@ function Login(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <a className="locations__item-link" href="#">
+              <Link className="locations__item-link" to={AppRoute.Root}>
                 <span>Amsterdam</span>
-              </a>
+              </Link>
             </div>
           </section>
         </div>

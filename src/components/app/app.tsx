@@ -1,40 +1,52 @@
 import Main from '../../pages/main/main';
 import Login from '../../pages/login/login';
-import Offer from '../../pages/offer/offer';
 import NotFoundPage from '../../pages/not-found-page/notFoundPage';
-import Favorites from '../../pages/favorites/favorites';
+import { Favorites } from '../../pages/favorites/favorites';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import PrivateRoute from '../private-route/private-route';
 import { HelmetProvider } from 'react-helmet-async';
+import { Card, OfferCard, Review } from '../../types/offers-types';
+import { Offer } from '../../pages/offer/offer';
 
 type AppProps = {
-  offers: number;
-}
+  cardList: Card[];
+  offerList: OfferCard[];
+  reviewList: Review[];
+  favoriteList: Card[];
+};
 
-function App({offers}: AppProps): JSX.Element {
+function App({
+  cardList,
+  offerList,
+  reviewList,
+  favoriteList,
+}: AppProps): JSX.Element {
   return (
     <HelmetProvider>
       <BrowserRouter>
         <Routes>
-          <Route
-            path={AppRoute.Main}
-            element={<Main offers={offers} />}
-          />
+          <Route index element={<Main cardList={cardList} />} />
           <Route
             path={AppRoute.Login}
-            element={<Login />}
-          />
-          <Route
-            path={AppRoute.Offer}
-            element={<Offer />}
+            element={<Login authorizationStatus={AuthorizationStatus.NoAuth} />}
           />
           <Route
             path={AppRoute.Favorites}
             element={
               <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
-                <Favorites />
+                <Favorites favoriteList={favoriteList} />
               </PrivateRoute>
+            }
+          />
+          <Route
+            path={AppRoute.Offer}
+            element={
+              <Offer
+                cardList={cardList}
+                offerList={offerList}
+                reviewList={reviewList}
+              />
             }
           />
           <Route
