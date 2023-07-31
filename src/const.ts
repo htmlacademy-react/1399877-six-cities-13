@@ -50,3 +50,16 @@ export const TextLength = {
   max: 300,
 } as const;
 
+export enum TypeOffer {
+  apartment = 'Apartment',
+  room = 'Private Room',
+  house = 'House',
+  hotel = 'Hotel',
+}
+
+export const URL_MARKER_DEFAULT =
+  'img/pin.svg';
+
+export const URL_MARKER_CURRENT =
+  'img/pin-active.svg';
+
