@@ -1,7 +1,7 @@
 import cn from 'classnames';
-import { Link} from 'react-router-dom';
+import { Link, generatePath} from 'react-router-dom';
 import { Card } from '../../types/offers-types';
-import { TypeOffer } from '../../const';
+import { AppRoute } from '../../const';
 
 type PlaceCardProps = {
   offer: Card;
@@ -10,9 +10,18 @@ type PlaceCardProps = {
   handleCardMouseLeave?: () => void;
 };
 
-export
-function PlaceCard({offer, variant, handleCardMouseEnter, handleCardMouseLeave}: PlaceCardProps): JSX.Element {
+export function PlaceCard({offer, variant, handleCardMouseEnter, handleCardMouseLeave}: PlaceCardProps): JSX.Element {
   const calcRating = (rating: number) => `${Math.round(rating) / 5 * 100}%`;
+  const {
+    id,
+    title,
+    type,
+    price,
+    isFavorite,
+    isPremium,
+    rating,
+    previewImage,
+  } = offer;
   return (
     <article
       className={cn(
@@ -28,7 +37,7 @@ function PlaceCard({offer, variant, handleCardMouseEnter, handleCardMouseLeave}:
         handleCardMouseLeave?.();
       }}
     >
-      {offer.isPremium &&
+      {isPremium &&
         <div className="place-card__mark">
           <span>Premium</span>
         </div>}
@@ -41,7 +50,7 @@ function PlaceCard({offer, variant, handleCardMouseEnter, handleCardMouseLeave}:
         <Link to={`/offer/:${offer.id}`}>
           <img
             className="place-card__image"
-            src={offer.previewImage}
+            src={previewImage}
             width={variant === 'cities' ? '260' : '150'}
             height={variant === 'cities' ? '200' : '110'}
             alt={offer.title}
@@ -51,14 +60,14 @@ function PlaceCard({offer, variant, handleCardMouseEnter, handleCardMouseLeave}:
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
-            <b className="place-card__price-value">&euro;{offer.price}</b>
+            <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button
             className={cn(
               'place-card__bookmark-button',
               'button',
-              {'place-card__bookmark-button--active': offer.isFavorite},
+              {'place-card__bookmark-button--active': isFavorite},
             )}
             type="button"
           >
@@ -70,15 +79,14 @@ function PlaceCard({offer, variant, handleCardMouseEnter, handleCardMouseLeave}:
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: calcRating(offer.rating) }} />
+            <span style={{ width: calcRating(rating) }} />
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`/offer/:${offer.id}`}>{offer.title}</Link>
-        </h2>\
-        <p className="place-card__type">{TypeOffer[offer.type]}</p>
-        {/* Не понимаю почему ругается линт */}
+          <Link to={generatePath(AppRoute.Offer, {id: id})}>{title}</Link>
+        </h2>
+        <p className="place-card__type">{type}</p>
       </div>
     </article>
   );

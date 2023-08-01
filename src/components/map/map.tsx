@@ -1,15 +1,14 @@
 import { useRef, useEffect} from 'react';
-import {Card} from '../../types/offers-types';
 import useMap from '../../hooks/use-map';
 import 'leaflet/dist/leaflet.css';
 import {Icon, Marker} from 'leaflet';
 import cn from 'classnames';
 import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../../const';
+import { useAppSelector } from '../../hooks';
 
 
 type MapProps = {
   selectedPoint: string | null;
-  points: Card[];
 };
 
 
@@ -25,10 +24,12 @@ const currentCustomIcon = new Icon({
   iconAnchor: [13, 39]
 });
 
-function Map({selectedPoint, points}: MapProps): JSX.Element {
+function Map({selectedPoint}: MapProps): JSX.Element {
   const mapRef = useRef(null);
 
-  const city = points[0]?.city;
+  const currentOffers = useAppSelector((state) => state.offers);
+
+  const city = currentOffers[0]?.city;
   const map = useMap(mapRef, city);
 
   useEffect(()=>{
@@ -36,7 +37,7 @@ function Map({selectedPoint, points}: MapProps): JSX.Element {
       if(city){
         map.setView([city.location.latitude, city.location.longitude], city.location.zoom);
 
-        points.forEach((offer) => {
+        currentOffers.forEach((offer) => {
           const marker = new Marker({
             lat: offer.location.latitude,
             lng: offer.location.longitude
@@ -52,7 +53,7 @@ function Map({selectedPoint, points}: MapProps): JSX.Element {
         });
       }
     }
-  }, [map,points, selectedPoint, city]);
+  }, [map,currentOffers, selectedPoint, city]);
 
   return(
     <section
@@ -61,6 +62,7 @@ function Map({selectedPoint, points}: MapProps): JSX.Element {
         'map'
       )}
       ref={mapRef}
+      style={{height: '100%', minHeight: '579px'}}
     />
   );
 }

@@ -2,21 +2,26 @@ import cn from 'classnames';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import { Header } from '../../components/header/header';
-import { Card, OfferCard, Review } from '../../types/offers-types';
+import {Card} from '../../types/offers-types';
 import NotFoundPage from '../not-found-page/notFoundPage';
-import { PlaceCard } from '../../components/place-card/place-card';
 import {AuthorizationStatus ,STAR_RATIO, OFFER_IMAGES } from '../../const';
 import { Reviews } from '../../components/review/review';
+import { OffersList } from '../../components/offers-list/offers-list';
+import { useState } from 'react';
+import { Review } from '../../types/reviews';
 
 type OfferProps = {
-  cardList: Card[];
-  offerList: OfferCard[];
+  offerList: Card[];
   reviewList: Review[];
 };
 
-export function Offer({ cardList, offerList, reviewList }: OfferProps): JSX.Element {
+export function OfferPage({offerList, reviewList }: OfferProps): JSX.Element {
   const { id } = useParams();
-  const card = offerList.find((item: OfferCard) => item.id === id);
+  const card = offerList.find((item: Card) => item.id === id);
+
+  const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
+  const handleCardMouseEnter = (offerId: string) => setSelectedPoint(offerId);
+  const handleCardMouseLeave = () => setSelectedPoint(null);
 
   if (!card) {
     return <NotFoundPage />;
@@ -37,14 +42,13 @@ export function Offer({ cardList, offerList, reviewList }: OfferProps): JSX.Elem
     host,
     images,
   } = card;
-
+  console.log(city)
   const { name, avatarUrl, isPro } = host;
 
-  const offersNearby = cardList
-    .filter((offer) => offer.city.name === city.name && offer.id !== id)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3);
-
+  // const offersNearby = offerList
+  //   .filter((offer) => offer.city.name === city.name && offer.id !== id)
+  //   .sort(() => Math.random() - 0.5)
+  //   .slice(0, 3);
   return (
     <div className="page">
       <Helmet>
@@ -168,13 +172,10 @@ export function Offer({ cardList, offerList, reviewList }: OfferProps): JSX.Elem
               Other places in the neighbourhood
             </h2>
             <div className="near-places__list places__list">
-              {offersNearby.map((offer: Card) => (
-                <PlaceCard
-                  key={offer.id}
-                  className="near-places"
-                  card={offer}
-                />
-              ))}
+              <OffersList
+                handleCardMouseEnter={handleCardMouseEnter}
+                handleCardMouseLeave={handleCardMouseLeave}
+              />
             </div>
           </section>
         </div>

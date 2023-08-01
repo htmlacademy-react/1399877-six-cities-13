@@ -1,5 +1,5 @@
 import { ReviewForm } from '../review-form/review-form';
-import { Review } from '../../types/offers-types';
+import { Review } from '../../types/reviews';
 import { MONTHS, AuthorizationStatus, STAR_RATIO } from '../../const';
 
 type ReviewsProps = {

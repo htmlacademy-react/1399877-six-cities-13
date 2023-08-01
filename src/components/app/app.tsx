@@ -1,4 +1,4 @@
-import Main from '../../pages/main/main';
+import Main from '../../pages/main-page/main-page';
 import Login from '../../pages/login/login';
 import NotFoundPage from '../../pages/not-found-page/notFoundPage';
 import { Favorites } from '../../pages/favorites/favorites';
@@ -6,18 +6,17 @@ import { AppRoute, AuthorizationStatus } from '../../const';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import PrivateRoute from '../private-route/private-route';
 import { HelmetProvider } from 'react-helmet-async';
-import { Card, OfferCard, Review } from '../../types/offers-types';
-import { Offer } from '../../pages/offer/offer';
+import { Card} from '../../types/offers-types';
+import { OfferPage } from '../../pages/offer-page/offer-page';
+import { Review } from '../../types/reviews';
 
 type AppProps = {
-  cardList: Card[];
-  offerList: OfferCard[];
+  offerList: Card[];
   reviewList: Review[];
   favoriteList: Card[];
 };
 
 function App({
-  cardList,
   offerList,
   reviewList,
   favoriteList,
@@ -26,7 +25,7 @@ function App({
     <HelmetProvider>
       <BrowserRouter>
         <Routes>
-          <Route index element={<Main cardList={cardList} />} />
+          <Route index element={<Main />} />
           <Route
             path={AppRoute.Login}
             element={<Login authorizationStatus={AuthorizationStatus.NoAuth} />}
@@ -42,8 +41,7 @@ function App({
           <Route
             path={AppRoute.Offer}
             element={
-              <Offer
-                cardList={cardList}
+              <OfferPage
                 offerList={offerList}
                 reviewList={reviewList}
               />

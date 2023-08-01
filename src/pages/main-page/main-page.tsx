@@ -1,23 +1,22 @@
 import { Helmet } from 'react-helmet-async';
-import { Card, CityNames} from '../../types/offers-types';
 import { Header } from '../../components/header/header';
-import Tabs from '../../components/tabs/tabs';
+import { Tabs } from '../../components/tabs/tabs';
 import { useState } from 'react';
-import { CITIES } from '../../const';
 import { MainEmpty } from '../../components/main-empty/main-empty';
 import Map from '../../components/map/map';
 import { OffersList } from '../../components/offers-list/offers-list';
+import { useAppSelector } from '../../hooks';
 
-type MainProps = {
-  cardList: Card[];
-}
+function Main(): JSX.Element {
 
-function Main({cardList}: MainProps): JSX.Element {
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
-  const [activeCity, setActiveCity] = useState<CityNames>(CITIES[3]);
-  const currentOffers = cardList.filter(({city}) => activeCity === city.name);
+
+  const currentOffers = useAppSelector((state) => state.offers);
+  const currentCity = useAppSelector((state) => state.city);
+
   const handleCardMouseEnter = (id: string) => setSelectedPoint(id);
   const handleCardMouseLeave = () => setSelectedPoint(null);
+
   const isNotEmpty = !!currentOffers.length;
   return (
     <div className="page page--gray page--main">
@@ -27,7 +26,7 @@ function Main({cardList}: MainProps): JSX.Element {
       <Header/>
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
-        <Tabs activeCity={activeCity} setActiveCity={setActiveCity} />
+        <Tabs currentCity={currentCity} />
         <div className="cities">
           {isNotEmpty ? (
             <div className="cities__places-container container">
@@ -50,7 +49,6 @@ function Main({cardList}: MainProps): JSX.Element {
                   </ul>
                 </form>
                 <OffersList
-                  currentOffers={currentOffers}
                   handleCardMouseEnter={handleCardMouseEnter}
                   handleCardMouseLeave={handleCardMouseLeave}
                 />
@@ -58,12 +56,11 @@ function Main({cardList}: MainProps): JSX.Element {
               <div className="cities__right-section">
                 <Map
                   selectedPoint={selectedPoint}
-                  points={currentOffers}
                 />
               </div>
             </div>
           ) : (
-            <MainEmpty activeCity={activeCity} />
+            <MainEmpty activeCity={selectedPoint} />
           )}
         </div>
       </main>

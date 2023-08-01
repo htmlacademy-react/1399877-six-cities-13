@@ -63,3 +63,4 @@ export const URL_MARKER_DEFAULT =
 export const URL_MARKER_CURRENT =
   'img/pin-active.svg';
 
+export const DEFAULT_ACTIVE_CITY = CITIES[3];
