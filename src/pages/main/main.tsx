@@ -6,15 +6,18 @@ import { useState } from 'react';
 import { CITIES } from '../../const';
 import { MainEmpty } from '../../components/main-empty/main-empty';
 import Map from '../../components/map/map';
-import { PlaceCard } from '../../components/place-card/place-card';
+import { OffersList } from '../../components/offers-list/offers-list';
 
 type MainProps = {
   cardList: Card[];
 }
 
 function Main({cardList}: MainProps): JSX.Element {
-  const [activeCity,setActiveCity] = useState<CityNames>(CITIES[0]);
+  const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
+  const [activeCity, setActiveCity] = useState<CityNames>(CITIES[3]);
   const currentOffers = cardList.filter(({city}) => activeCity === city.name);
+  const handleCardMouseEnter = (id: string) => setSelectedPoint(id);
+  const handleCardMouseLeave = () => setSelectedPoint(null);
   const isNotEmpty = !!currentOffers.length;
   return (
     <div className="page page--gray page--main">
@@ -46,20 +49,22 @@ function Main({cardList}: MainProps): JSX.Element {
                     <li className="places__option" tabIndex={0}>Top rated first</li>
                   </ul>
                 </form>
-                <div className="cities__places-list places__list tabs__content">
-                  {currentOffers.map((offer)=> (
-                    <PlaceCard card={offer} className="cities" key={offer.id}/>
-                  ))}
-                </div>
+                <OffersList
+                  currentOffers={currentOffers}
+                  handleCardMouseEnter={handleCardMouseEnter}
+                  handleCardMouseLeave={handleCardMouseLeave}
+                />
               </section>
               <div className="cities__right-section">
-                <Map />
+                <Map
+                  selectedPoint={selectedPoint}
+                  points={currentOffers}
+                />
               </div>
             </div>
           ) : (
             <MainEmpty activeCity={activeCity} />
           )}
-
         </div>
       </main>
     </div>

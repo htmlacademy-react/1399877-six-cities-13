@@ -2,7 +2,7 @@ import { CITIES } from '../const';
 
 export type CityNames = (typeof CITIES)[number];
 
-type City = {
+export type City = {
   name: string;
   location: Location;
 };
