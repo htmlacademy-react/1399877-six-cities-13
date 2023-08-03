@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import {Provider} from 'react-redux';
 import App from './components/app/app';
 import { OfferList } from './mocks/offer-list/offer-list';
-import { ReviewsList } from './mocks/reviews/reviews';
+import { Reviews } from './mocks/reviews/reviews';
 import { FavoritesList } from './mocks/favorites/favorites';
 import { store } from './store/store';
 
@@ -15,7 +15,7 @@ root.render(
     <Provider store = {store}>
       <App
         offerList={OfferList}
-        reviewList={ReviewsList}
+        reviewList={Reviews}
         favoriteList={FavoritesList}
       />
     </Provider>

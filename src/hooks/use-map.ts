@@ -1,10 +1,28 @@
 import { useRef, useState, useEffect, MutableRefObject } from 'react';
-import { Map, TileLayer } from 'leaflet';
+import { Map, TileLayer, Icon, Marker } from 'leaflet';
 import { City } from '../types/offers-types';
+import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../const';
+import { useAppSelector } from '.';
 
-export default function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: City): Map | null {
+const defaultCustomIcon = new Icon({
+  iconUrl: URL_MARKER_DEFAULT,
+  iconSize: [27, 39],
+  iconAnchor: [13, 39]
+});
+
+const currentCustomIcon = new Icon({
+  iconUrl: URL_MARKER_CURRENT,
+  iconSize: [27, 39],
+  iconAnchor: [13, 39]
+});
+
+
+export default function useMap(mapRef: MutableRefObject<HTMLElement | null>, selectedPoint: string | null): void {
   const [map, setMap] = useState<Map | null>(null);
   const isRenderedRef = useRef<boolean>(false);
+
+  const currentOffers = useAppSelector((state) => state.offers);
+  const city: City = currentOffers[0]?.city;
 
   useEffect(() => {
     if (mapRef.current && !isRenderedRef.current) {
@@ -31,5 +49,26 @@ export default function useMap(mapRef: MutableRefObject<HTMLElement | null>, cit
     }
   }, [mapRef, city]);
 
-  return map;
+  useEffect(()=>{
+    if(map){
+      if(city){
+        map.setView([city.location.latitude, city.location.longitude], city.location.zoom);
+
+        currentOffers.forEach((offer) => {
+          const marker = new Marker({
+            lat: offer.location.latitude,
+            lng: offer.location.longitude
+          });
+
+          marker
+            .setIcon(
+              selectedPoint && selectedPoint === offer.id
+                ? currentCustomIcon
+                : defaultCustomIcon
+            )
+            .addTo(map);
+        });
+      }
+    }
+  }, [map,currentOffers, selectedPoint, city]);
 }

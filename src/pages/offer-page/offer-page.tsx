@@ -4,11 +4,13 @@ import { useParams } from 'react-router-dom';
 import { Header } from '../../components/header/header';
 import {Card} from '../../types/offers-types';
 import NotFoundPage from '../not-found-page/notFoundPage';
-import {AuthorizationStatus ,STAR_RATIO, OFFER_IMAGES } from '../../const';
-import { Reviews } from '../../components/review/review';
+import {STAR_RATIO, OFFER_IMAGES } from '../../const';
+import ReviewsList from '../../components/reviews-list/reviews-list';
 import { OffersList } from '../../components/offers-list/offers-list';
 import { useState } from 'react';
 import { Review } from '../../types/reviews';
+import Map from '../../components/map/map';
+import { ReviewForm } from '../../components/review-form/review-form';
 
 type OfferProps = {
   offerList: Card[];
@@ -34,21 +36,14 @@ export function OfferPage({offerList, reviewList }: OfferProps): JSX.Element {
     rating,
     title,
     type,
-    city,
     bedrooms,
     maxAdults,
-    description,
     goods,
     host,
     images,
   } = card;
-  console.log(city)
   const { name, avatarUrl, isPro } = host;
 
-  // const offersNearby = offerList
-  //   .filter((offer) => offer.city.name === city.name && offer.id !== id)
-  //   .sort(() => Math.random() - 0.5)
-  //   .slice(0, 3);
   return (
     <div className="page">
       <Helmet>
@@ -155,16 +150,27 @@ export function OfferPage({offerList, reviewList }: OfferProps): JSX.Element {
                   {isPro && <span className="offer__user-status">Pro</span>}
                 </div>
                 <div className="offer__description">
-                  <p className="offer__text">{description}</p>
+                  {card.description
+                    .split('.')
+                    .filter((item) => item !== '')
+                    .map((item) => item.replace(/^ +/, ''))
+                    .map((item) => (
+                      <p className="offer__text" key={item}>
+                        {`${item}.`}
+                      </p>
+                    ))}
                 </div>
               </div>
-              <Reviews
-                reviewList={reviewList}
-                authorizationStatus={AuthorizationStatus.Auth}
-              />
+              <section className="offer__reviews reviews">
+                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewList.length}</span></h2>
+                {reviewList && <ReviewsList reviewList={reviewList} />}
+                <ReviewForm />
+              </section>
             </div>
           </div>
-          <section className="offer__map map" />
+          <Map
+            selectedPoint={selectedPoint}
+          />
         </section>
         <div className="container">
           <section className="near-places places">
