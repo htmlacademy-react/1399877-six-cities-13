@@ -11,20 +11,21 @@ import { useState } from 'react';
 import { Review } from '../../types/reviews';
 import Map from '../../components/map/map';
 import { ReviewForm } from '../../components/review-form/review-form';
+import { useAppSelector } from '../../hooks';
 
-type OfferProps = {
-  offerList: Card[];
+type OfferPageProps = {
   reviewList: Review[];
-};
+}
 
-export function OfferPage({offerList, reviewList }: OfferProps): JSX.Element {
+export function OfferPage({reviewList}: OfferPageProps): JSX.Element {
+  const currentOffers = useAppSelector((state) => state.offers);
   const { id } = useParams();
-  const card = offerList.find((item: Card) => item.id === id);
+  const card = currentOffers.find((item: Card) => item.id === id);
 
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
+
   const handleCardMouseEnter = (offerId: string) => setSelectedPoint(offerId);
   const handleCardMouseLeave = () => setSelectedPoint(null);
-
   if (!card) {
     return <NotFoundPage />;
   }

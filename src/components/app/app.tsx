@@ -11,13 +11,11 @@ import { OfferPage } from '../../pages/offer-page/offer-page';
 import { Review } from '../../types/reviews';
 
 type AppProps = {
-  offerList: Card[];
   reviewList: Review[];
   favoriteList: Card[];
 };
 
 function App({
-  offerList,
   reviewList,
   favoriteList,
 }: AppProps): JSX.Element {
@@ -42,7 +40,6 @@ function App({
             path={AppRoute.Offer}
             element={
               <OfferPage
-                offerList={offerList}
                 reviewList={reviewList}
               />
             }
