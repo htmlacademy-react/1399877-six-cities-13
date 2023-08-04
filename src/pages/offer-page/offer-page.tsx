@@ -2,22 +2,30 @@ import cn from 'classnames';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import { Header } from '../../components/header/header';
-import { Card, OfferCard, Review } from '../../types/offers-types';
+import {Card} from '../../types/offers-types';
 import NotFoundPage from '../not-found-page/notFoundPage';
-import { PlaceCard } from '../../components/place-card/place-card';
-import {AuthorizationStatus ,STAR_RATIO, OFFER_IMAGES } from '../../const';
-import { Reviews } from '../../components/review/review';
+import {STAR_RATIO, OFFER_IMAGES } from '../../const';
+import ReviewsList from '../../components/reviews-list/reviews-list';
+import { OffersList } from '../../components/offers-list/offers-list';
+import { useState } from 'react';
+import { Review } from '../../types/reviews';
+import Map from '../../components/map/map';
+import { ReviewForm } from '../../components/review-form/review-form';
+import { useAppSelector } from '../../hooks';
 
-type OfferProps = {
-  cardList: Card[];
-  offerList: OfferCard[];
+type OfferPageProps = {
   reviewList: Review[];
-};
+}
 
-export function Offer({ cardList, offerList, reviewList }: OfferProps): JSX.Element {
+export function OfferPage({reviewList}: OfferPageProps): JSX.Element {
+  const currentOffers = useAppSelector((state) => state.offers);
   const { id } = useParams();
-  const card = offerList.find((item: OfferCard) => item.id === id);
+  const card = currentOffers.find((item: Card) => item.id === id);
 
+  const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
+
+  const handleCardMouseEnter = (offerId: string) => setSelectedPoint(offerId);
+  const handleCardMouseLeave = () => setSelectedPoint(null);
   if (!card) {
     return <NotFoundPage />;
   }
@@ -29,21 +37,13 @@ export function Offer({ cardList, offerList, reviewList }: OfferProps): JSX.Elem
     rating,
     title,
     type,
-    city,
     bedrooms,
     maxAdults,
-    description,
     goods,
     host,
     images,
   } = card;
-
   const { name, avatarUrl, isPro } = host;
-
-  const offersNearby = cardList
-    .filter((offer) => offer.city.name === city.name && offer.id !== id)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3);
 
   return (
     <div className="page">
@@ -151,16 +151,27 @@ export function Offer({ cardList, offerList, reviewList }: OfferProps): JSX.Elem
                   {isPro && <span className="offer__user-status">Pro</span>}
                 </div>
                 <div className="offer__description">
-                  <p className="offer__text">{description}</p>
+                  {card.description
+                    .split('.')
+                    .filter((item) => item !== '')
+                    .map((item) => item.replace(/^ +/, ''))
+                    .map((item) => (
+                      <p className="offer__text" key={item}>
+                        {`${item}.`}
+                      </p>
+                    ))}
                 </div>
               </div>
-              <Reviews
-                reviewList={reviewList}
-                authorizationStatus={AuthorizationStatus.Auth}
-              />
+              <section className="offer__reviews reviews">
+                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewList.length}</span></h2>
+                {reviewList && <ReviewsList reviewList={reviewList} />}
+                <ReviewForm />
+              </section>
             </div>
           </div>
-          <section className="offer__map map" />
+          <Map
+            selectedPoint={selectedPoint}
+          />
         </section>
         <div className="container">
           <section className="near-places places">
@@ -168,13 +179,10 @@ export function Offer({ cardList, offerList, reviewList }: OfferProps): JSX.Elem
               Other places in the neighbourhood
             </h2>
             <div className="near-places__list places__list">
-              {offersNearby.map((offer: Card) => (
-                <PlaceCard
-                  key={offer.id}
-                  className="near-places"
-                  card={offer}
-                />
-              ))}
+              <OffersList
+                handleCardMouseEnter={handleCardMouseEnter}
+                handleCardMouseLeave={handleCardMouseLeave}
+              />
             </div>
           </section>
         </div>
