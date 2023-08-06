@@ -5,7 +5,7 @@ import App from './components/app/app';
 import { OfferList } from './mocks/offer-list/offer-list';
 import { Reviews } from './mocks/reviews/reviews';
 import { FavoritesList } from './mocks/favorites/favorites';
-import { store } from './store/store';
+import { store } from './store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
