@@ -1,10 +1,10 @@
 import cn from 'classnames';
 import { Link, generatePath} from 'react-router-dom';
-import { Card } from '../../types/offers-types';
+import { TOffers } from '../../types/offers-types';
 import { AppRoute } from '../../const';
 
 type PlaceCardProps = {
-  offer: Card;
+  offer: TOffers;
   variant: 'cities' | 'favorites';
   handleCardMouseEnter?: (id: string) => void;
   handleCardMouseLeave?: () => void;

@@ -2,17 +2,19 @@ import { useRef} from 'react';
 import useMap from '../../hooks/use-map';
 import 'leaflet/dist/leaflet.css';
 import cn from 'classnames';
+import { City, TOffers } from '../../types/offers-types';
 
 
 type MapProps = {
+  city: City;
+  offers: TOffers[];
   selectedPoint: string | null;
 };
 
-function Map({selectedPoint}: MapProps): JSX.Element {
+function Map(prop: MapProps): JSX.Element {
   const mapRef = useRef(null);
 
-
-  useMap(mapRef, selectedPoint);
+  useMap(mapRef, prop);
   return(
     <section
       className={cn(

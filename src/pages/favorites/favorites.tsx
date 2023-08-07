@@ -1,20 +1,16 @@
 import cn from 'classnames';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Card } from '../../types/offers-types';
 import { AppRoute, CITIES } from '../../const';
 import { Header } from '../../components/header/header';
 import { FavoritesEmpty } from '../../components/favorites-empty/favorites-empty';
 import { PlaceCard } from '../../components/place-card/place-card';
 import { Footer } from '../../components/footer/footer';
-
-type FavoritesProps = {
-  favoriteList: Card[];
-};
+import { FavoritesList } from '../../mocks/favorites/favorites';
 
 
-export function Favorites({ favoriteList }: FavoritesProps): JSX.Element {
-  const isNotEmpty = !!favoriteList.length;
+export function Favorites(): JSX.Element {
+  const isNotEmpty = !!FavoritesList.length;
 
   return (
     <div className={cn('page', { 'page--favorites-empty': !isNotEmpty })}>

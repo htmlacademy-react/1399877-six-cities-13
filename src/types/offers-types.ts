@@ -15,7 +15,7 @@ type Host = {
   isPro: boolean;
 };
 
-export type Card = {
+export type TOffers = {
   id: string;
   title: string;
   type: string;
