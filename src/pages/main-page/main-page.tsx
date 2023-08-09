@@ -12,7 +12,7 @@ function Main(): JSX.Element {
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
 
   const currentOffers = useAppSelector((state) => state.offers);
-  const currentCity = useAppSelector((state) => state.city);
+  const currentCity = useAppSelector((state) => state.activeCity);
 
   const handleCardMouseEnter = (id: string) => setSelectedPoint(id);
   const handleCardMouseLeave = () => setSelectedPoint(null);

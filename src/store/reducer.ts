@@ -1,24 +1,25 @@
 import {createReducer} from '@reduxjs/toolkit';
-import { OfferList } from '../mocks/offer-list/offer-list';
 import { Card } from '../types/offers-types';
-import {changeCity} from './action';
 import { DEFAULT_ACTIVE_CITY } from '../const';
+import { getOffers, setActiveCity } from './action';
+import { OfferList } from '../mocks/offer-list/offer-list';
 
-function getStartPlaces(offersList: Card[], city: string) {
-  return offersList.filter((offer) => offer.city.name === city);
+type initalState = {
+  activeCity: string;
+  offers: Card[];
 }
 
-const initialState = {
-  city: DEFAULT_ACTIVE_CITY,
-  offers: getStartPlaces(OfferList, DEFAULT_ACTIVE_CITY)
+const initalState: initalState = {
+  activeCity: DEFAULT_ACTIVE_CITY,
+  offers: OfferList
 };
 
-const reducer = createReducer(initialState, (builder) => {
+export const reducer = createReducer(initalState, (builder) => {
   builder
-    .addCase(changeCity, (state, action) => {
-      state.city = action.payload;
-      state.offers = getStartPlaces(OfferList, state.city);
+    .addCase(setActiveCity, (state, action) => {
+      state.activeCity = action.payload;
+    })
+    .addCase(getOffers, (state, action) => {
+      state.offers = action.payload;
     });
 });
-
-export {reducer};
