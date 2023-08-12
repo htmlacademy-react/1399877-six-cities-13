@@ -17,7 +17,7 @@ import { filterOffersByCity } from '../../utils/utils';
 
 export function OfferPage(): JSX.Element {
   const dispatch = useAppDispatch();
-  const reviews = useAppSelector((state) => state.reviews);
+  const reviews = useAppSelector((state) => state.comments);
   const currentOffers = useAppSelector((state) => state.offers);
   const currentCity: string = useAppSelector((state) => state.activeCity);
   const sortOffers = useAppSelector((state) => state.sorting);
@@ -34,8 +34,8 @@ export function OfferPage(): JSX.Element {
   const handleCardMouseLeave = () => setSelectedPoint(null);
 
   useEffect(() => {
-    dispatch(fetchReviews());
-  },[dispatch]);
+    dispatch(fetchReviews(reviews));
+  },[dispatch, reviews]);
 
   if (!card) {
     return <NotFoundPage />;

@@ -1,23 +1,27 @@
 import {createReducer} from '@reduxjs/toolkit';
 import { TOffers } from '../types/offers-types';
-import { DEFAULT_ACTIVE_CITY, DEFAULT_SORTING } from '../const';
-import { changeSort, fetchOffers, fetchReviews, setActiveCity } from './action';
-import { offers } from '../mocks/offers/offers';
-import { Reviews } from '../mocks/reviews/reviews';
+import { AuthorizationStatus, DEFAULT_ACTIVE_CITY, DEFAULT_SORTING } from '../const';
+import { changeSort, fetchOffers, fetchReviews, loadOffers, requireAuthorization, setActiveCity, setError, setOffersDataLoadingStatus } from './action';
 import { Review } from '../types/reviews';
 
 type initalState = {
   activeCity: string;
   offers: TOffers[];
-  reviews: Review[];
+  comments: Review[];
   sorting: string;
+  authorizationStatus: AuthorizationStatus;
+  error: string | null;
+  isOffersDataLoading: boolean;
 }
 
 const initalState: initalState = {
   activeCity: DEFAULT_ACTIVE_CITY,
-  offers: offers,
-  reviews: Reviews,
+  offers: [],
+  comments: [],
   sorting: DEFAULT_SORTING,
+  authorizationStatus: AuthorizationStatus.Unknown,
+  error: null,
+  isOffersDataLoading: false
 };
 
 export const reducer = createReducer(initalState, (builder) => {
@@ -25,13 +29,25 @@ export const reducer = createReducer(initalState, (builder) => {
     .addCase(setActiveCity, (state, action) => {
       state.activeCity = action.payload;
     })
-    .addCase(fetchOffers, (state) => {
-      state.offers = offers;
+    .addCase(fetchOffers, (state, action) => {
+      state.offers = action.payload;
     })
     .addCase(changeSort, (state, action) => {
       state.sorting = action.payload;
     })
-    .addCase(fetchReviews, (state) => {
-      state.reviews = Reviews;
+    .addCase(fetchReviews, (state, action) => {
+      state.comments = action.payload;
+    })
+    .addCase(loadOffers, (state, action) => {
+      state.offers = action.payload;
+    })
+    .addCase(setOffersDataLoadingStatus, (state, action) => {
+      state.isOffersDataLoading = action.payload;
+    })
+    .addCase(requireAuthorization, (state, action) => {
+      state.authorizationStatus = action.payload;
+    })
+    .addCase(setError, (state, action) => {
+      state.error = action.payload;
     });
 });

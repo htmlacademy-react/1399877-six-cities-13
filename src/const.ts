@@ -81,4 +81,14 @@ export enum NameSpace {
 }
 
 export const BACKEND_URL = 'https://13.design.pages.academy/six-cities';
+
 export const REQUEST_TIMEOUT = 5000;
+
+export enum APIRoute {
+  Offers = '/offers',
+  Comments = '/comments/',
+  Login = '/login',
+  Logout = '/logout',
+}
+
+export const TIMEOUT_SHOW_ERROR = 2000;

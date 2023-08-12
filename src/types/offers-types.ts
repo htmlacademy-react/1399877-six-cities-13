@@ -1,4 +1,6 @@
-type Location = {
+import {TypeOffer} from '../const';
+
+export type Point = {
   latitude: number;
   longitude: number;
   zoom: number;
@@ -6,10 +8,10 @@ type Location = {
 
 export type City = {
   name: string;
-  location: Location;
+  location: Point;
 };
 
-type Host = {
+type OfferHost = {
   name: string;
   avatarUrl: string;
   isPro: boolean;
@@ -18,10 +20,10 @@ type Host = {
 export type TOffers = {
   id: string;
   title: string;
-  type: string;
+  type: keyof typeof TypeOffer;
   price: number;
   city: City;
-  location: Location;
+  location: Point;
   isFavorite: boolean;
   isPremium: boolean;
   rating: number;
@@ -31,6 +33,5 @@ export type TOffers = {
   images: string[];
   maxAdults: number;
   previewImage: string;
-  host: Host;
+  host: OfferHost;
 };
-

@@ -26,8 +26,8 @@ function Main(): JSX.Element {
 
 
   useEffect(() => {
-    dispatch(fetchOffers());
-  },[dispatch]);
+    dispatch(fetchOffers(currentOffers));
+  },[dispatch, currentOffers]);
 
   return (
     <div className="page page--gray page--main">

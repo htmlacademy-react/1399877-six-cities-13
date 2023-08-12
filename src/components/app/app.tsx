@@ -1,7 +1,7 @@
 import Main from '../../pages/main-page/main-page';
 import Login from '../../pages/login/login';
 import NotFoundPage from '../../pages/not-found-page/notFoundPage';
-import { Favorites } from '../../pages/favorites/favorites';
+import { Favorites } from '../../pages/favorites/favorites-page';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import PrivateRoute from '../private-route/private-route';
