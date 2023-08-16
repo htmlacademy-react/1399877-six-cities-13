@@ -1,11 +1,13 @@
 export const STAR_RATIO = 20;
 export const OFFER_IMAGES = 6;
-export const AppRoute = {
-  Root: '/',
-  Login: '/login',
-  Favorites: '/favorites',
-  Offer: '/offer/:id',
-} as const;
+
+export enum AppRoute {
+  Root = '/',
+  Login = '/login',
+  Favorites = '/favorites',
+  Offer = '/offer/:id',
+  NotFound = '*',
+}
 
 export enum AuthorizationStatus {
   Auth = 'AUTH',
@@ -75,9 +77,13 @@ export enum SortingType {
 export const DEFAULT_SORTING = SortingType.Popular;
 
 export enum NameSpace {
-  Offers = 'OFFERS',
-  Offer = 'OFFER',
-  Reviews = 'REVIEWS'
+  Offers = 'Offers',
+  Offer = 'Offer',
+  Reviews = 'Reviews',
+  loadOffers = 'loadOffers',
+  setActiveCity= 'setActiveCity',
+  data= 'data',
+  user = 'user'
 }
 
 export const BACKEND_URL = 'https://13.design.pages.academy/six-cities';

@@ -1,12 +1,11 @@
 import { Helmet } from 'react-helmet-async';
 import { Header } from '../../components/header/header';
 import { Tabs } from '../../components/tabs/tabs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Map from '../../components/map/map';
 import { OffersList } from '../../components/offers-list/offers-list';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppSelector } from '../../hooks';
 import { PlacesSorting } from '../../components/places-sorting/places-sorting';
-import { fetchOffers } from '../../store/action';
 import { filterOffersByCity } from '../../utils/utils';
 
 
@@ -17,17 +16,11 @@ function Main(): JSX.Element {
   const handleCardMouseEnter = (id: string) => setSelectedPoint(id);
   const handleCardMouseLeave = () => setSelectedPoint(null);
 
-  const dispatch = useAppDispatch();
   const currentOffers = useAppSelector((state) => state.offers);
   const currentCity: string = useAppSelector((state) => state.activeCity);
   const sortOffers = useAppSelector((state) => state.sorting);
   const offersByCity = filterOffersByCity(currentOffers, currentCity, sortOffers);
   const city = offersByCity[0]?.city;
-
-
-  useEffect(() => {
-    dispatch(fetchOffers(currentOffers));
-  },[dispatch, currentOffers]);
 
   return (
     <div className="page page--gray page--main">

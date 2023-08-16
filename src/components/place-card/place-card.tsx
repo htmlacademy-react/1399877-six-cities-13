@@ -5,7 +5,7 @@ import { AppRoute } from '../../const';
 
 type PlaceCardProps = {
   offer: TOffers;
-  variant: 'cities' | 'favorites';
+  variant: 'cities' | 'favorites' | 'near-places';
   handleCardMouseEnter?: (id: string) => void;
   handleCardMouseLeave?: () => void;
 };

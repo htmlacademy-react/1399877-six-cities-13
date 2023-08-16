@@ -1,20 +1,21 @@
 import { createAction } from '@reduxjs/toolkit';
-import { AuthorizationStatus, NameSpace } from '../const';
+import { AppRoute, AuthorizationStatus, NameSpace } from '../const';
 import { TOffers } from '../types/offers-types';
 import { Review } from '../types/reviews';
+import { UserData } from '../types/user-data';
+import { CommentData } from '../types/comment-data';
 
-export const setActiveCity = createAction('setActiveCity', (city: string) => ({payload: city}));
-
-export const fetchOffers = createAction(`${NameSpace.Offers}/fetch`, (offers: TOffers[]) => ({payload: offers}));
-
-export const fetchReviews = createAction(`${NameSpace.Reviews}/fetch`, (comments: Review[]) => ({payload: comments}));
-
-export const changeSort = createAction('offers/changeSort', (sorting: string) => ({payload: sorting}));
-
-export const loadOffers = createAction<TOffers[]>('loading/loadOffers');
-
-export const setOffersDataLoadingStatus = createAction<boolean>('data/setOffersDataLoadingStatus');
-
-export const requireAuthorization = createAction<AuthorizationStatus>('user/requireAuthorization');
-
-export const setError = createAction<string | null>('app/setError');
+export const setActiveCity = createAction(`${NameSpace.setActiveCity}`, (city: string) => ({payload: city}));
+export const changeSort = createAction(`${NameSpace.Offers}/changeSort`, (sorting: string) => ({payload: sorting}));
+export const loadOffers = createAction<TOffers[]>(`${NameSpace.loadOffers}/loading`);
+export const setOffersDataLoadingStatus = createAction<boolean>(`${NameSpace.data}/setOffersDataLoadingStatus`);
+export const loadOffer = createAction<TOffers>(`${NameSpace.Offer}/loading`);
+export const loadNearbyOffers = createAction(`${NameSpace.data}/loadNearbyOffers`, (nearby: TOffers[] | null) => ({payload: nearby}));
+export const setOfferNearbyError = createAction<boolean>(`${NameSpace.data}/setOfferNearbyError`);
+export const loadComments = createAction(`${NameSpace.data}/loading`, (comments: Review[]) => ({payload: comments}));
+export const setReviewsDataLoadingStatus = createAction<boolean>(`${NameSpace.data}/setReviewsDataLoadingStatus`);
+export const requireAuthorization = createAction<AuthorizationStatus>(`${NameSpace.user}/requireAuthorization`);
+export const setUserInfo = createAction(`${NameSpace.user}/setUserInfo`, (userInfo: UserData | null) => ({payload: userInfo}));
+export const redirectToRoute = createAction<AppRoute>('app/redirectToRoute');
+export const postComment = createAction('data/postComment', (newComment: CommentData) => ({payload: newComment}));
+export const setDetailsOfferDataLoadingStatus = createAction<boolean>(`${NameSpace.data}/setDetailsOfferDataLoadingStatus`);

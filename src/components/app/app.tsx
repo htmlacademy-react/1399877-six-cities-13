@@ -7,9 +7,20 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import PrivateRoute from '../private-route/private-route';
 import { HelmetProvider } from 'react-helmet-async';
 import { OfferPage } from '../../pages/offer-page/offer-page';
+import { useAppSelector } from '../../hooks';
+import LoadingPage from '../../pages/loading-page/loading-page';
 
 
 function App(): JSX.Element {
+
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
+
+  if(authorizationStatus === AuthorizationStatus.Unknown || isOffersDataLoading) {
+    return (
+      <LoadingPage/>
+    );
+  }
 
   return (
     <HelmetProvider>
@@ -23,7 +34,7 @@ function App(): JSX.Element {
           <Route
             path={AppRoute.Favorites}
             element={
-              <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
+              <PrivateRoute authorizationStatus={authorizationStatus}>
                 <Favorites />
               </PrivateRoute>
             }
