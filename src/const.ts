@@ -63,4 +63,19 @@ export const URL_MARKER_DEFAULT =
 export const URL_MARKER_CURRENT =
   'img/pin-active.svg';
 
-export const DEFAULT_ACTIVE_CITY = CITIES[3];
+export const DEFAULT_ACTIVE_CITY = CITIES[0];
+
+export enum SortingType {
+  Popular = 'Popular',
+  LowToHigh = 'Price: low to high',
+  HighToLow = 'Price: high to low',
+  TopRated = 'Top rated first',
+}
+
+export const DEFAULT_SORTING = SortingType.Popular;
+
+export enum NameSpace {
+  Offers = 'OFFERS',
+  Offer = 'OFFER',
+  Reviews = 'REVIEWS'
+}

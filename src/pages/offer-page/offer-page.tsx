@@ -2,30 +2,41 @@ import cn from 'classnames';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import { Header } from '../../components/header/header';
-import {Card} from '../../types/offers-types';
+import {TOffers} from '../../types/offers-types';
 import NotFoundPage from '../not-found-page/notFoundPage';
 import {STAR_RATIO, OFFER_IMAGES } from '../../const';
-import ReviewsList from '../../components/reviews-list/reviews-list';
 import { OffersList } from '../../components/offers-list/offers-list';
-import { useState } from 'react';
-import { Review } from '../../types/reviews';
+import { useEffect, useState } from 'react';
 import Map from '../../components/map/map';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchReviews } from '../../store/action';
+import ReviewsList from '../../components/reviews-list/reviews-list';
 import { ReviewForm } from '../../components/review-form/review-form';
-import { useAppSelector } from '../../hooks';
+import { filterOffersByCity } from '../../utils/utils';
 
-type OfferPageProps = {
-  reviewList: Review[];
-}
 
-export function OfferPage({reviewList}: OfferPageProps): JSX.Element {
+export function OfferPage(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const reviews = useAppSelector((state) => state.reviews);
   const currentOffers = useAppSelector((state) => state.offers);
-  const { id } = useParams();
-  const card = currentOffers.find((item: Card) => item.id === id);
+  const currentCity: string = useAppSelector((state) => state.activeCity);
+  const sortOffers = useAppSelector((state) => state.sorting);
 
+  const offersByCity = filterOffersByCity(currentOffers, currentCity, sortOffers);
+  const city = offersByCity[0]?.city;
+
+
+  const { id } = useParams();
+  const card = currentOffers.find((item: TOffers) => item.id === id);
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
 
   const handleCardMouseEnter = (offerId: string) => setSelectedPoint(offerId);
   const handleCardMouseLeave = () => setSelectedPoint(null);
+
+  useEffect(() => {
+    dispatch(fetchReviews());
+  },[dispatch]);
+
   if (!card) {
     return <NotFoundPage />;
   }
@@ -163,13 +174,15 @@ export function OfferPage({reviewList}: OfferPageProps): JSX.Element {
                 </div>
               </div>
               <section className="offer__reviews reviews">
-                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewList.length}</span></h2>
-                {reviewList && <ReviewsList reviewList={reviewList} />}
+                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
+                {reviews && <ReviewsList reviews={reviews} />}
                 <ReviewForm />
               </section>
             </div>
           </div>
           <Map
+            offers={offersByCity}
+            city={city}
             selectedPoint={selectedPoint}
           />
         </section>
@@ -180,6 +193,7 @@ export function OfferPage({reviewList}: OfferPageProps): JSX.Element {
             </h2>
             <div className="near-places__list places__list">
               <OffersList
+                offers={offersByCity}
                 handleCardMouseEnter={handleCardMouseEnter}
                 handleCardMouseLeave={handleCardMouseLeave}
               />

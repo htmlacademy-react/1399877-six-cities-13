@@ -2,7 +2,7 @@ import {useState} from 'react';
 import cn from 'classnames';
 import {SortingType} from '../../const';
 import {useAppDispatch} from '../../hooks';
-import changeSor
+import {changeSort} from '../../store/action';
 
 type PlacesSortingProps = {
   sorting: string;

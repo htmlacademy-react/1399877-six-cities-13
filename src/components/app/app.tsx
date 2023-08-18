@@ -6,19 +6,11 @@ import { AppRoute, AuthorizationStatus } from '../../const';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import PrivateRoute from '../private-route/private-route';
 import { HelmetProvider } from 'react-helmet-async';
-import { Card} from '../../types/offers-types';
 import { OfferPage } from '../../pages/offer-page/offer-page';
-import { Review } from '../../types/reviews';
 
-type AppProps = {
-  reviewList: Review[];
-  favoriteList: Card[];
-};
 
-function App({
-  reviewList,
-  favoriteList,
-}: AppProps): JSX.Element {
+function App(): JSX.Element {
+
   return (
     <HelmetProvider>
       <BrowserRouter>
@@ -32,16 +24,14 @@ function App({
             path={AppRoute.Favorites}
             element={
               <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
-                <Favorites favoriteList={favoriteList} />
+                <Favorites />
               </PrivateRoute>
             }
           />
           <Route
             path={AppRoute.Offer}
             element={
-              <OfferPage
-                reviewList={reviewList}
-              />
+              <OfferPage />
             }
           />
           <Route

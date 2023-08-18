@@ -1,6 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Card } from '../types/offers-types';
+import { NameSpace } from '../const';
 
 export const setActiveCity = createAction('setActiveCity', (city: string) => ({payload: city}));
 
-export const getOffers = createAction('getOffers', (offers: Card[]) => ({payload: offers}));
+export const fetchOffers = createAction(`${NameSpace.Offers}/fetch`);
+
+export const fetchReviews = createAction(`${NameSpace.Reviews}/fetch`);
+
+export const changeSort = createAction('offers/changeSort', (sorting: string) => ({payload: sorting}));
