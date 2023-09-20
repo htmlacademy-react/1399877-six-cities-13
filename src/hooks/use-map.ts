@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, MutableRefObject } from 'react';
 import { Map, TileLayer, Icon, Marker } from 'leaflet';
-import { City, TOffers } from '../types/offers-types';
+import { City, Offer } from '../types/offers-types';
 import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../const';
 
 const defaultCustomIcon = new Icon({
@@ -17,7 +17,7 @@ const currentCustomIcon = new Icon({
 
 type UseMapProps = {
   city: City;
-  offers: TOffers[];
+  offers: Offer[];
   selectedPoint: string | null;
 };
 

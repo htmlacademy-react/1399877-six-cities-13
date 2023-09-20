@@ -1,70 +1,51 @@
-import { Helmet } from 'react-helmet-async';
-import { Header } from '../../components/header/header';
-import { Tabs } from '../../components/tabs/tabs';
-import { useEffect, useState } from 'react';
-import Map from '../../components/map/map';
-import { OffersList } from '../../components/offers-list/offers-list';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { PlacesSorting } from '../../components/places-sorting/places-sorting';
-import { fetchOffers } from '../../store/action';
-import { filterOffersByCity } from '../../utils/utils';
+import {useEffect} from 'react';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {AuthorizationStatus, RequestStatus} from '../../const';
+import {fetchOffersAction, fetchFavoritesAction} from '../../store/api-action';
+import {getAuthorizationStatus} from '../../store/user-data/user-data.selectors';
+import {getOffers, getOffersFetchingStatus, getActiveCity} from '../../store/offers-data/offers-data.selectors';
+import {CitiesListMemo as CitiesList} from '../../components/cities-list/cities-list';
+import Header from '../../components/header/header';
+import MainEmpty from '../../components/main-empty/main-empty';
+import Cities from '../../components/cities/cities';
+import Loader from '../../components/loader/loader';
+import classNames from 'classnames';
 
-
-function Main(): JSX.Element {
-
-  const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
-
-  const handleCardMouseEnter = (id: string) => setSelectedPoint(id);
-  const handleCardMouseLeave = () => setSelectedPoint(null);
+function MainPage(): JSX.Element {
+  const isAuthorizationStatus = useAppSelector(getAuthorizationStatus);
+  const isOffersDataLoading = useAppSelector(getOffersFetchingStatus);
+  const activeCity = useAppSelector(getActiveCity);
+  const offers = useAppSelector(getOffers);
+  const isEmpty = offers.length === 0;
 
   const dispatch = useAppDispatch();
-  const currentOffers = useAppSelector((state) => state.offers);
-  const currentCity: string = useAppSelector((state) => state.activeCity);
-  const sortOffers = useAppSelector((state) => state.sorting);
-  const offersByCity = filterOffersByCity(currentOffers, currentCity, sortOffers);
-  const city = offersByCity[0]?.city;
-
 
   useEffect(() => {
-    dispatch(fetchOffers());
-  },[dispatch]);
+    dispatch(fetchOffersAction());
+    dispatch(fetchFavoritesAction());
+  }, [dispatch]);
+
+  if (isAuthorizationStatus === AuthorizationStatus.Unknown ||
+    isOffersDataLoading === RequestStatus.Pending) {
+    return (
+      <Loader/>
+    );
+  }
 
   return (
     <div className="page page--gray page--main">
-      <Helmet>
-        <title>6 cities</title>
-      </Helmet>
       <Header/>
-      <main className="page__main page__main--index">
-        <h1 className="visually-hidden">Cities</h1>
-        <Tabs currentCity={currentCity} />
-        <div className="cities">
-
-          <div className="cities__places-container container">
-            <section className="cities__places places">
-              <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offersByCity.length} places to stay in {currentCity}</b>
-              <PlacesSorting sorting={sortOffers}/>
-              <OffersList
-                handleCardMouseEnter={handleCardMouseEnter}
-                handleCardMouseLeave={handleCardMouseLeave}
-                offers={offersByCity}
-              />
-            </section>
-            <div className="cities__right-section">
-              <Map
-                offers={offersByCity}
-                city={city}
-                selectedPoint={selectedPoint}
-              />
-            </div>
-          </div>
-        </div>
+      <main
+        className={classNames({
+          'page__main page__main--index': true,
+          'page__main--index-empty': isEmpty,
+        })}
+      >
+        <CitiesList currentCity={activeCity.name}/>
+        {isEmpty ? <MainEmpty/> : <Cities offers={offers} activeCity={activeCity}/>}
       </main>
     </div>
   );
 }
 
-export default Main;
-
-
+export default MainPage;

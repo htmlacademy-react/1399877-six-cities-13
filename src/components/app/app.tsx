@@ -1,47 +1,53 @@
-import Main from '../../pages/main-page/main-page';
-import Login from '../../pages/login/login';
+import {HelmetProvider} from 'react-helmet-async';
+import {Routes, Route} from 'react-router-dom';
+import {useAppSelector} from '../../hooks';
+import {AppRoute} from '../../const';
+import {getAuthorizationStatus} from '../../store/user-data/user-data.selectors';
+import MainPage from '../../pages/main-page/main-page';
+import LoginPage from '../../pages/login-page/login-page';
+import OfferPage from '../../pages/offer-page/offer-page';
+import FavoritesPage from '../../pages/favorites-page/favorites-page';
 import NotFoundPage from '../../pages/not-found-page/notFoundPage';
-import { Favorites } from '../../pages/favorites/favorites';
-import { AppRoute, AuthorizationStatus } from '../../const';
-import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import PrivateRoute from '../private-route/private-route';
-import { HelmetProvider } from 'react-helmet-async';
-import { OfferPage } from '../../pages/offer-page/offer-page';
-
+import HistoryRouter from '../history-router/history-router';
+import browserHistory from '../../browser-history';
 
 function App(): JSX.Element {
+  const isAuthorizationStatus = useAppSelector(getAuthorizationStatus);
 
   return (
     <HelmetProvider>
-      <BrowserRouter>
+      <HistoryRouter history={browserHistory}>
         <Routes>
-          <Route index element={<Main />} />
+          <Route
+            path={AppRoute.Main}
+            element={<MainPage/>}
+          />
           <Route
             path={AppRoute.Login}
-            element={<Login authorizationStatus={AuthorizationStatus.NoAuth} />}
+            element={<LoginPage/>}
           />
+          <Route path={AppRoute.Offer}>
+            <Route
+              path=':id'
+              element={<OfferPage/>}
+            />
+          </Route>
           <Route
             path={AppRoute.Favorites}
             element={
-              <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
-                <Favorites />
+              <PrivateRoute authorizationStatus={isAuthorizationStatus}>
+                <FavoritesPage/>
               </PrivateRoute>
             }
           />
           <Route
-            path={AppRoute.Offer}
-            element={
-              <OfferPage />
-            }
-          />
-          <Route
-            path='*'
-            element={<NotFoundPage />}
+            path="*"
+            element={<NotFoundPage/>}
           />
         </Routes>
-      </BrowserRouter>
+      </HistoryRouter>
     </HelmetProvider>
-
   );
 }
 

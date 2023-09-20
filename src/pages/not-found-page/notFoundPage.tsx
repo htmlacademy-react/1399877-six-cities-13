@@ -1,20 +1,17 @@
-import { Helmet } from 'react-helmet-async';
+import {Link} from 'react-router-dom';
+import {Helmet} from 'react-helmet-async';
 
-export default function NotFoundPage():JSX.Element {
+function NotFoundPage(): JSX.Element {
+
   return (
-    <div className="page">
+    <>
       <Helmet>
-        <title>404</title>
+        <title>6 cities: Page Not Found</title>
       </Helmet>
-      <main className="page__main page__main--offer">
-        <section>
-          <div className="container">
-            <h1 className="offer__name">
-              404 There is no such page, sorry!
-            </h1>
-          </div>
-        </section>
-      </main>
-    </div>
+      <h1>404 Not Found</h1>
+      <Link to='/'>Вернуться на главную</Link>
+    </>
   );
 }
+
+export default NotFoundPage;

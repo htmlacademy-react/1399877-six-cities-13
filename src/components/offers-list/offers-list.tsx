@@ -1,26 +1,26 @@
-import { PlaceCard } from '../place-card/place-card';
-import { TOffers } from '../../types/offers-types';
+import {memo} from 'react';
+import { Offer } from '../../types/offers-types';
+import {OfferCardMemo as OfferCard} from '../offer-card/offer-card';
+import classNames from 'classnames';
 
 type OffersListProps = {
-  offers: TOffers[];
-  handleCardMouseEnter?: (id: string) => void;
-  handleCardMouseLeave?: () => void;
+  offers: Offer[];
+  type: 'cities' | 'near-places' | 'favorites';
+  onOfferCardHover: (id: string | undefined) => void;
 }
 
-export function OffersList({offers, handleCardMouseEnter, handleCardMouseLeave}:OffersListProps): JSX.Element{
+function OffersList({offers, type, onOfferCardHover}: OffersListProps): JSX.Element {
+  const offersListClass = classNames({
+    'cities__places-list places__list tabs__content': type === 'cities',
+    'near-places__list places__list': type === 'near-places',
+    'favorites__places': type === 'favorites',
+  });
 
-
-  return(
-    <div className="cities__places-list places__list tabs__content">
-      {offers.map((offer) => (
-        <PlaceCard
-          key={offer.id}
-          offer={offer}
-          variant={'cities'}
-          handleCardMouseEnter={handleCardMouseEnter}
-          handleCardMouseLeave={handleCardMouseLeave}
-        />
-      ))}
+  return (
+    <div className={offersListClass}>
+      {offers.map((offer) => (<OfferCard type={type} key={offer.id} offer={offer} onOfferCardHover={onOfferCardHover}/>))}
     </div>
   );
 }
+
+export const OffersListMemo = memo(OffersList);
