@@ -1,4 +1,4 @@
-import {DetailOffer} from '../../types/offer-types';
+import {DetailOffer} from '../../types/offers-types';
 
 type OfferGalleryProps = {
   offer: DetailOffer;
