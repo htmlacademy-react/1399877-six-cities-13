@@ -1,9 +1,8 @@
-import { useRef} from 'react';
+import { useRef } from 'react';
 import useMap from '../../hooks/use-map';
 import 'leaflet/dist/leaflet.css';
 import cn from 'classnames';
 import { City, DetailOffer, Offer } from '../../types/offers-types';
-
 
 type MapProps = {
   city: City;
@@ -16,14 +15,11 @@ function Map(prop: MapProps): JSX.Element {
   const mapRef = useRef(null);
 
   useMap(mapRef, prop);
-  return(
+  return (
     <section
-      className={cn(
-        `${'cities'}__map`,
-        'map'
-      )}
+      className={cn(`${'cities'}__map`, 'map')}
       ref={mapRef}
-      style={{height: '100%', minHeight: '579px'}}
+      style={{ height: '100%', minHeight: '579px' }}
     />
   );
 }

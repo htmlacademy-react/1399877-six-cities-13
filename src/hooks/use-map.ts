@@ -6,26 +6,28 @@ import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../const';
 const defaultCustomIcon = new Icon({
   iconUrl: URL_MARKER_DEFAULT,
   iconSize: [27, 39],
-  iconAnchor: [13, 39]
+  iconAnchor: [13, 39],
 });
 
 const currentCustomIcon = new Icon({
   iconUrl: URL_MARKER_CURRENT,
   iconSize: [27, 39],
-  iconAnchor: [13, 39]
+  iconAnchor: [13, 39],
 });
 
 type UseMapProps = {
   city: City;
-  offers: Offer[];
-  selectedPoint: string | null;
+  points: Offer[];
+  selectedPoint: Offer | undefined;
 };
 
-
-export default function useMap(mapRef: MutableRefObject<HTMLElement | null>, prop : UseMapProps): void {
+export default function useMap(
+  mapRef: MutableRefObject<HTMLElement | null>,
+  prop: UseMapProps
+): void {
   const [map, setMap] = useState<Map | null>(null);
   const isRenderedRef = useRef<boolean>(false);
-  const {city, offers, selectedPoint} = prop;
+  const { city, points, selectedPoint } = prop;
 
   useEffect(() => {
     if (mapRef.current && !isRenderedRef.current) {
@@ -52,20 +54,23 @@ export default function useMap(mapRef: MutableRefObject<HTMLElement | null>, pro
     }
   }, [mapRef, city]);
 
-  useEffect(()=>{
-    if(map){
-      if(city){
-        map.setView([city.location.latitude, city.location.longitude], city.location.zoom);
+  useEffect(() => {
+    if (map) {
+      if (city) {
+        map.setView(
+          [city.location.latitude, city.location.longitude],
+          city.location.zoom
+        );
 
-        offers.forEach((offer) => {
+        points.forEach((offer) => {
           const marker = new Marker({
             lat: offer.location.latitude,
-            lng: offer.location.longitude
+            lng: offer.location.longitude,
           });
 
           marker
             .setIcon(
-              selectedPoint && selectedPoint === offer.id
+              selectedPoint && selectedPoint.id === offer.id
                 ? currentCustomIcon
                 : defaultCustomIcon
             )
@@ -73,5 +78,5 @@ export default function useMap(mapRef: MutableRefObject<HTMLElement | null>, pro
         });
       }
     }
-  }, [map,offers, selectedPoint, city]);
+  }, [map, points, selectedPoint, city]);
 }
