@@ -1,65 +1,106 @@
-import { Fragment, useState } from 'react';
+import {useState, useEffect, FormEvent, ChangeEvent, Fragment} from 'react';
+import {toast} from 'react-toastify';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {RequestStatus} from '../../const';
+import {Offer} from '../../types/offers-types';
+import {postReview} from '../../store/api-action';
+import {dropReviewSendingStatus} from '../../store/reviews-data/reviews-data.slice';
+import {getReviewSendingStatus} from '../../store/reviews-data/reviews-data.selectors';
 
-export function ReviewForm(): JSX.Element {
+const CommentLength = {MIN: 50, MAX: 300};
 
-  const ratingValues: number[] = [5, 4, 3, 2, 1];
+const ratingMap = {
+  '5': 'perfect',
+  '4': 'good',
+  '3': 'not bad',
+  '2': 'badly',
+  '1': 'terribly',
+};
 
-  const [formData, setFormData] = useState({
-    rating: '',
-    comment: '',
-  });
+type ReviewFormProps = {
+  id: Offer['id'];
+}
 
-  const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const {value} = evt.target;
-    setFormData({...formData, rating: value});
+function ReviewForm({id}: ReviewFormProps): JSX.Element {
+  const [rating, setRating] = useState('');
+  const [comment, setComment] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const sendingStatus = useAppSelector(getReviewSendingStatus);
+
+  const isValid =
+    comment.length >= CommentLength.MIN &&
+    comment.length <= CommentLength.MAX &&
+    rating !== '';
+
+  const handleFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    dispatch(postReview({reviewData: {comment, rating: Number(rating)}, id}));
   };
 
-  const handleTextareaChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const {value} = evt.target;
-    setFormData({...formData, comment: value});
-  };
+  function handleRatingChange(evt: ChangeEvent<HTMLInputElement>) {
+    setRating(evt.target.value);
+  }
+
+  function handleCommentChange(evt: ChangeEvent<HTMLTextAreaElement>) {
+    setComment(evt.target.value);
+  }
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isMounted) {
+      switch (sendingStatus) {
+        case RequestStatus.Success:
+          setRating('');
+          setComment('');
+          dispatch(dropReviewSendingStatus());
+          break;
+        case RequestStatus.Pending:
+          setIsSubmitting(true);
+          break;
+        case RequestStatus.Error:
+          toast.warn('Комментарий не отправлен');
+          setIsSubmitting(false);
+          break;
+        default:
+          setIsSubmitting(false);
+      }
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [sendingStatus, dispatch]);
 
   return (
-    <form className="reviews__form form" action="#" method="post">
+    <form className="reviews__form form" action="#" method="post" onSubmit={handleFormSubmit}>
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
-        {
-          ratingValues.map((score) => (
+        {Object.entries(ratingMap)
+          .reverse()
+          .map(([score, title]) => (
             <Fragment key={score}>
-              <input
-                className="form__rating-input visually-hidden"
-                name="rating"
-                value={score}
-                id={`${score}-stars`}
-                type="radio"
-                onChange={handleInputChange}
-              />
-              <label
-                htmlFor={`${score}-stars`}
-                className="reviews__rating-label form__rating-label"
-              >
-                <svg className="form__star-image" width={37} height={33}>
+              <input className="form__rating-input visually-hidden" name="rating" value={score} id={`${score}-stars`} type="radio" checked={rating === score} disabled={isSubmitting} onChange={handleRatingChange}/>
+              <label htmlFor={`${score}-stars`} className="reviews__rating-label form__rating-label" title={title}>
+                <svg className="form__star-image" width="37" height="33">
                   <use xlinkHref="#icon-star"></use>
                 </svg>
               </label>
             </Fragment>
-          ))
-        }
+          ))}
       </div>
-      <textarea
-        className="reviews__textarea form__textarea"
-        name="review"
-        id="review"
-        placeholder="Tell how was your stay, what you like and what can be improved"
-        onChange={handleTextareaChange}
-        value={formData.comment}
-      />
+
+      <textarea className="reviews__textarea form__textarea" id="review" name="review" placeholder="Tell how was your stay, what you like and what can be improved" value={comment} disabled={isSubmitting} onChange={handleCommentChange}></textarea>
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
-          To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">50 characters</b>.
+          To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">{CommentLength.MIN}</b>.
         </p>
-        <button className="reviews__submit form__submit button" type="submit" disabled>Submit</button>
+        <button className="reviews__submit form__submit button" type="submit" disabled={!isValid || isSubmitting}>Submit</button>
       </div>
     </form>
   );
 }
+
+export default ReviewForm;

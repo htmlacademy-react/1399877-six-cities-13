@@ -1,19 +1,39 @@
-import { TOffers } from '../types/offers-types';
+import {City, Offer} from '../types/offers-types';
 
-const COUNT_STARS = 5;
+export const sorting: Record<string, (offers: Offer[]) => Offer[]> = {
+  popular: (offers: Offer[]) => offers.slice(),
+  high: (offers: Offer[]) => offers.slice().sort((a: Offer, b: Offer) => a.price - b.price),
+  low: (offers: Offer[]) => offers.slice().sort((a: Offer, b: Offer) => b.price - a.price),
+  top: (offers: Offer[]) => offers.slice().sort((a: Offer, b: Offer) => b.rating - a.rating),
+};
 
-export const calcRating = (rating: number) => `${Math.round(rating) / COUNT_STARS * 100}%`;
+export const getRandomCity = (obj: Record<string, City>) => {
+  const keys = Object.keys(obj);
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  return obj[randomKey];
+};
 
-export const SortingCallback: {
-  [key: string]: (arg0: TOffers, arg1: TOffers) => number;
-  } = {
-    Popular: () => 0,
-    LowToHigh: (a: TOffers, b: TOffers) => a.price - b.price,
-    HighToLow: (a: TOffers, b: TOffers) => b.price - a.price,
-    TopRated: (a: TOffers, b: TOffers) => b.rating - a.rating
-  };
+export const getFormatDate = (date: string): string => {
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 
-export function filterOffersByCity(offersList: TOffers[], city: string | undefined, sorting: string) {
-  return offersList.filter((offer) => offer.city.name === city).sort(SortingCallback[sorting]);
-}
+  const currentDate = new Date(date);
+  const currentMonth = months[currentDate.getMonth()];
+  const currentYear = currentDate.getFullYear();
 
+  return `${currentMonth} ${currentYear}`;
+};
+
+export const getDateTime = (date: string): string => date.split('T')[0];

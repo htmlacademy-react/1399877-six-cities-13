@@ -1,19 +1,28 @@
 import { Review } from '../../types/reviews';
-import { ReviewItem } from '../review-item/review-item';
+import ReviewCard from '../review-card/review-card';
 
-type ReviewsListProps = {
+const MAX_REVIEWS_QUANTITY = 10;
+
+type ReviewListProps ={
   reviews: Review[];
 }
 
-function ReviewsList ({reviews}: ReviewsListProps): JSX.Element {
+function ReviewList({reviews}: ReviewListProps): JSX.Element {
+  const sortReviews = reviews
+    .slice()
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, MAX_REVIEWS_QUANTITY);
 
   return (
-    <ul className="reviews__list">
-      {reviews.map((review) => (
-        <ReviewItem key={review.id} review={review} />
-      ))}
-    </ul>
+    <>
+      <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
+      <ul className="reviews__list">
+        {sortReviews.map((review) => (
+          <ReviewCard key={review.id} review={review}/>)
+        )}
+      </ul>
+    </>
   );
 }
 
-export default ReviewsList;
+export default ReviewList;
